@@ -1,0 +1,511 @@
+import ast
+from asyncio import Event, events
+from datetime import datetime
+import json
+from flask import Flask, request, jsonify
+import mysql.connector
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from flask_cors import CORS,cross_origin
+from flask_bcrypt import Bcrypt
+from sqlalchemy import event
+
+
+
+app = Flask(__name__)
+CORS(app, resources={r"*": {"origins": "http://localhost:4200"}})
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:Admin%40123@localhost:3306/flask'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+
+
+db = SQLAlchemy(app)
+migrate = Migrate(app,db)
+bcrypt = Bcrypt(app)
+import  mysql.connector as cnx
+cnx.connect(host = '127.0.0.1', user = 'root', passwd = 'Admin@123')
+
+class Admin(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+
+    def set_password(self, password):
+        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+
+
+    def check_password(self, password):
+        return bcrypt.check_password_hash(self.password_hash, password)
+
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email
+        }
+    def __init__(self, id,username,email,password):
+        self.id = id
+        self.username = username
+        self.email = email
+        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+    def admin_id(self,username):
+        # query = f"SELECT emp_id FROM employee WHERE username = '{username}'"
+
+        # db_handler = MySQLHandler()
+        # cursor = db_handler.get_cursor()
+        # cursor.execute(query)
+        # results = cursor.fetchall()
+
+        # # Close the connection when done
+        # db_handler.close_connection()
+
+        # return str(results)
+        # username = eval(f'{username}')
+        # query = f"select emp_id from employee where username = username"
+
+        # Creating an instance of MySQLHandler
+        db_handler = MySQLHandler()
+        cursor = db_handler.get_cursor()
+
+        # Use the cursor for database operations
+        cursor.execute("select id from admin where username = %s",(username,))
+        result = cursor.fetchall()
+
+        # Close the connection when done
+        db_handler.close_connection()
+
+        return list(result)
+
+
+
+class User(db.Model):
+
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email
+        }
+
+@app.route('/users', methods=['GET'])
+@cross_origin()
+def get_users():
+    users = User.query.all()
+    return jsonify([user.serialize() for user in users])
+
+@app.route('/users', methods=['POST'])
+@cross_origin()
+def create_user():
+    data = request.get_json()
+    new_user = User(username=data['username'], email=data['email'])
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({'message': 'User created successfully'}), 201
+
+@app.route('/users/<int:user_id>', methods=['DELETE'])
+@cross_origin()
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({'message': 'User deleted successfully'}), 200
+
+
+@app.route('/admins', methods=['GET'])
+@cross_origin()
+def get_admins():
+    admins = Admin.query.all()
+    return jsonify([admin.serialize() for admin in admins])
+
+@app.route('/admins', methods=['POST'])
+@cross_origin()
+def create_admin():
+    data = request.get_json()
+    new_admin = Admin(username=data['username'], email=data['email'])
+    new_admin.set_password(data['password'])  # Set the password using the provided data
+    db.session.add(new_admin)
+    db.session.commit()
+    return jsonify({'message': 'Admin created successfully'}), 201
+
+@app.route('/authenticate', methods=['POST'])
+@cross_origin()
+def authenticate():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({'error': 'Username and password are required'}), 400
+
+    admin = Admin.query.filter_by(username=username).first()
+
+    if admin and admin.check_password(password):
+        return admin.admin_id(username)
+    else:
+        return jsonify({'error': 'Invalid username or password'}), 401
+
+@app.route('/admins/<int:admin_id>', methods=['GET'])
+@cross_origin()
+def get_single_admin(admin_id):
+    admin = Admin.query.get(admin_id)
+
+    if admin:
+        return jsonify(admin.serialize())
+    else:
+        return jsonify({'error': 'Admin not found'}), 404
+
+class MySQLHandler_admin:
+      def __init__(self):
+        self.connection = mysql.connector.connect(
+            host='127.0.0.1',
+            user='root',
+            password='Admin@123',
+            database='flask'
+        )
+        self.cursor = self.connection.cursor()
+
+      def get_cursor(self):
+        return self.cursor
+
+      def close_connection(self):
+          self.cursor.close()
+          self.connection.close()
+
+class MySQLHandler:
+      def __init__(self):
+        self.connection = mysql.connector.connect(
+            host='127.0.0.1',
+            user='root',
+            password='Admin@123',
+            database='flask'
+        )
+        self.cursor = self.connection.cursor()
+
+      def get_cursor(self):
+        return self.cursor
+
+      def close_connection(self):
+          self.cursor.close()
+          self.connection.close()
+
+
+class Employee(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    emp_id = db.Column(db.Integer, unique=True, nullable=False)
+    emp_name = db.Column(db.String(100), nullable=False)
+    job_position = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    gender = db.Column(db.String(10), nullable=False)
+    age = db.Column(db.Integer, nullable=False)
+    contact_no = db.Column(db.String(15), nullable=False)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+
+    def __init__(self, emp_id, emp_name, job_position, email, gender, age, contact_no, username, password):
+        self.emp_id = emp_id
+        self.emp_name = emp_name
+        self.job_position = job_position
+        self.email = email
+        self.gender = gender
+        self.age = age
+        self.contact_no = contact_no
+        self.username = username
+        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def set_password(self, password):
+        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def check_password(self, password):
+        return bcrypt.check_password_hash(self.password, password)
+
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'emp_id': self.emp_id,
+            'emp_name': self.emp_name,
+            'job_position': self.job_position,
+            'email': self.email,
+            'gender': self.gender,
+            'age': self.age,
+            'contact_no': self.contact_no,
+            'username': self.username,
+            'password': self.password  # Note: This exposes the hashed password, which may not be suitable in a real-world scenario
+        }
+    def to_empname(self):
+        return{
+            'emp_name':self.emp_name
+        }
+
+
+    def employee_id(self,username):
+        # query = f"SELECT emp_id FROM employee WHERE username = '{username}'"
+
+        # db_handler = MySQLHandler()
+        # cursor = db_handler.get_cursor()
+        # cursor.execute(query)
+        # results = cursor.fetchall()
+
+        # # Close the connection when done
+        # db_handler.close_connection()
+
+        # return str(results)
+        # username = eval(f'{username}')
+        # query = f"select emp_id from employee where username = username"
+
+        # Creating an instance of MySQLHandler
+        db_handler = MySQLHandler()
+        cursor = db_handler.get_cursor()
+
+        # Use the cursor for database operations
+        cursor.execute("select * from employee where username = %s",(username,))
+        results = cursor.fetchall()
+
+        # Close the connection when done
+        db_handler.close_connection()
+
+        return list(results)
+
+
+
+
+@app.route('/employees/results',methods = ['GET'])
+@cross_origin()
+def current_employees():
+    employee = Employee.query.filter_by(emp_id = Employee.employee_id.results).first()
+    employee_list = [employee.to_dict() for employee in employee]
+    return jsonify({"employees": employee_list})
+
+@app.route('/employees', methods=['GET'])
+@cross_origin()
+def get_all_employees():
+    employees = Employee.query.all()
+    employees_list = [employee.to_empname() for employee in employees]
+    return employees_list
+
+@app.route('/employees/<int:emp_id>', methods=['GET'])
+@cross_origin()
+def get_employee(emp_id):
+    employees = Employee.query.filter_by(emp_id=emp_id).first()
+
+    if not employees:
+        return jsonify({'error': 'Employee not found'}), 404
+    employee_data = {
+        'id': employees.id,
+        'emp_id': employees.emp_id,
+        'emp_name': employees.emp_name,
+        'job_position': employees.job_position,
+        'email': employees.email,
+        'gender': employees.gender,
+        'age': employees.age,
+        'contact_no': employees.contact_no,
+        'username': employees.username,
+        'password': employees.password,
+    }
+
+    return jsonify({'emp_name': employee_data})
+
+@app.route('/employees', methods=['POST'])
+@cross_origin()
+def add_employee():
+    data = request.get_json()
+
+    new_employee = Employee(
+        emp_id=data['emp_id'],
+        emp_name=data['emp_name'],
+        job_position=data['job_position'],
+        email=data['email'],
+        gender=data['gender'],
+        age=data['age'],
+        contact_no=data['contact_no'],
+        username=data['username'],
+        password=data['password']  # Assuming the password is already hashed on the client side
+    )
+
+    db.session.add(new_employee)
+    db.session.commit()
+
+    return jsonify({'message': 'Employee added successfully'})
+
+@app.route('/login', methods=['POST'])
+@cross_origin()
+def login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    if 'username' not in data or 'password' not in data:
+        return jsonify({'error': 'Username and password are required'}), 400
+
+
+    employee = Employee.query.filter_by(username=username).first()
+
+    if employee and employee.check_password(password):
+        # return jsonify({'message': 'Authentication successful'}), 200
+        return employee.employee_id(username)
+    else:
+        return jsonify({'error': 'Invalid username or password'}), 401
+
+
+@app.route('/employees/<int:emp_id>', methods=['DELETE'])
+@cross_origin()
+def delete_employee(emp_id):
+    employee = Employee.query.get(emp_id)
+
+    if not employee:
+        return jsonify({'error': 'Employee not found'}), 404
+
+    db.session.delete(employee)
+    db.session.commit()
+
+    return jsonify({'message': 'Employee deleted successfully'})
+
+
+class Request(db.Model):
+    request_id = db.Column(db.Integer, primary_key=True,autoincrement = True)
+    emp_id = db.Column(db.String(20), unique=False, nullable=False)
+    emp_name = db.Column(db.String(100), nullable=False)
+    request_status = db.Column(db.String(20),default = "pending",nullable = False)
+    request_time = db.Column(db.DateTime, nullable = False,default = datetime.utcnow)
+    date_from = db.Column(db.DateTime,nullable = False)
+    date_to =db.Column(db.DateTime)
+    approved_by = db.Column(db.String(50),nullable = False)
+    approved_time = db.Column(db.DateTime, nullable = False)
+    manager = db.Column(db.String(100),nullable = False)
+    request_type = db.Column(db.String(100),nullable = False)
+    email = db.Column(db.String(100),nullable = False)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'emp_id': self.emp_id,
+            'emp_name': self.emp_name,
+            'request_status':self.request_status,
+            'request_time':self.request_time.isoformat(), #convert to iso format for JSON seralization
+            'approved_by':self.approved_by,
+            'approved_time':self.approved_time,
+            'manager':self.manager,
+            'request_type':self.request_type,
+            'email':self.email
+        }
+    def __init__(self, emp_id, emp_name,request_status,request_time,date_from,date_to,approved_by,approved_time, manager, request_type, email):
+        self.emp_id = emp_id
+        self.emp_name = emp_name
+        self.request_status = request_status
+        self.request_time = request_time.utcnow()
+        self.date_from =date_from
+        self.date_to = date_to
+        self.approved_by = approved_by
+        self.approved_time = approved_time
+        self.manager = manager
+        self.request_type = request_type
+        self.email = email
+
+
+
+
+
+@app.route('/request',methods = ['POST'])
+@cross_origin()
+def post_request():
+    # response = requests.get("http://127.0.0.1:5000/employees/<int:emp_id>")
+    # if response.status_code ==200:
+    #     employee = response.json
+    #     emp_id = employee.get(emp_id)
+    #     emp_name = employee.get(emp_name)
+    data = request.get_json()
+    date_from_str = data.get('date_from', '')
+    date_to_str = data.get('date_to', '')
+    date_from = datetime.strptime(date_from_str, '%Y-%m-%d') if date_from_str else '2023-11-30'
+    date_to = datetime.strptime(date_to_str, '%Y-%m-%d') if date_to_str else '2023-11-30'
+
+    request_data = Request(
+        emp_id = data['emp_id'],
+        emp_name = data['emp_name'],
+        request_status=data.get('request_status', 'pending'),
+        request_time = datetime.utcnow(),
+        date_from=date_from,
+        date_to=date_to,
+        approved_by = data['approved_by'],
+        approved_time = datetime.utcnow(),
+        manager = data['manager'],
+        request_type = data['request_type'],
+        email = data['email']
+    )
+    db.session.add(request_data)
+    db.session.commit()
+    return jsonify({'message': 'Employee added successfully'})
+@app.route('/request', methods=['POST'])
+@cross_origin()
+def get_requests():
+    data = request.get_json()
+
+    date_from = datetime.strptime(data['date_from'], '%Y-%m-%d')
+    date_to = datetime.strptime(data['date_to'], '%Y-%m-%d') if 'date_to' in data else datetime.utcnow()
+    request_type = data['request_type']
+
+    requests = Request.query.filter(
+        Request.date_from >= date_from,
+        Request.date_to <= date_to if 'date_to' in data else datetime.utcnow(),
+        Request.request_type == request_type
+    ).all()
+
+    serialized_requests = [request.serialize() for request in requests]
+
+    return jsonify(serialized_requests), 200
+class Absence(db.Model):
+    leave_id = db.Column(db.Integer,primary_key = True)
+    emp_id = db.Column(db.Integer, unique=False, nullable=False)
+    emp_name = db.Column(db.String(100), nullable=False)
+    date_from = db.Column(db.DateTime,nullable = False)
+    date_to =db.Column(db.DateTime)
+    contact_no = db.Column(db.String(100),nullable = False)
+    email = db.Column(db.String(100),nullable = False)
+    leave_status = db.Column(db.String(100),nullable = False,default = 'No')
+
+    def serialize(self):
+        return {
+            'leave_id':self.leave_id,
+            'emp_id':self.emp_id,
+            'emp_name':self.emp_name,
+            'date_from':self.date_from,
+            'date_to':self.date_to,
+            'contact_no':self.contact_no,
+            'email':self.email,
+            'leave_status':self.leave_status
+        }
+
+@app.route('/absence',methods = ['POST'])
+@cross_origin()
+def post_absence():
+  data = request.get_json()
+  post_leave = Absence(
+      leave_id = data['leave_id'],
+      emp_id = data['emp_id'],
+      emp_name = data['emp_name'],
+      date_from = datetime.utcnow(),
+      date_to = datetime.utcnow(),
+      contact_no = data['contact_no'],
+      email = data['email'],
+      leave_status = data['leave_status']
+  )
+  db.session.add(post_leave)
+  db.session.commit()
+
+  return jsonify({'message': 'Employee added successfully'})
+
+
+if __name__ == '__main__':
+    db.create_all()
+    app.run(debug=True)
+
+    # print(employee_id('abcd'))
+
+

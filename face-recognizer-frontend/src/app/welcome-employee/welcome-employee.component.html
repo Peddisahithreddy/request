@@ -1,0 +1,38 @@
+<!-- <p>welcome-employee works!</p> -->
+
+<body>
+    <nav>
+        <div class="nav-left">
+            <!-- <img [src]="image" alt="Logo" class="logo2"> -->
+        </div>
+        <ul>
+          <li><a><img [src]="boy_icon" alt="Photo Icon" class="nav-icon">
+            </a></li>
+
+          <li><a >Employee</a></li>
+          <li><a routerLink="/login">Logout</a></li>
+        </ul>
+      </nav>
+      <div class="admin-container" id="admin-details">
+
+        <p id="adminname">Request Sent!!</p>
+
+        <span class="close-button" (click)="hideNotification()">✖</span>
+      </div>
+
+
+    <div class="employee-container">
+        <h2>Welcome, {{emp_name}}!</h2>
+
+
+        <div class="options">
+          <button type = "submit"(click) = "onsave2()">View Attendance</button>
+          <button type = "submit"(click) = "onsave3()">View Attendance</button>
+            <a href="regularize-attendance">Regularize Attendance</a>
+        </div>
+
+    </div>
+
+
+
+</body>

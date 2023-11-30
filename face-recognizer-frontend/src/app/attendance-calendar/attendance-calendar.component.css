@@ -1,0 +1,97 @@
+
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
+  background-image: url("/assets/astreya_background.png");
+  height: 100vh;
+}
+nav {
+  /* background-color: #f0eaea; */
+  padding: 15px;
+  display: flex;
+  gap: 75rem;
+ 
+}
+.nav-icon{
+
+  width: 25px;
+    height: 25px;
+}
+
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 35px;
+  overflow: hidden;
+}
+
+li {
+  float: left;
+  margin-right: 20px;
+}
+
+a {
+  color: #fff;
+  text-decoration: none;
+}
+
+  .calendar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+    margin: 20px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    border-radius: 8px;
+  }
+
+  .user-info {
+    text-align: center;
+    margin: 10px 0;
+  }
+
+  .calendar {
+    display: flex;
+    max-width: 600px;
+  }
+
+  .day {
+    flex-grow: 1;
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    text-align: center;
+    transition: background-color 0.3s ease;
+  }
+
+  .day:hover {
+    background-color: #f0f0f0;
+  }
+
+  .present {
+    color: #4caf50;
+    font-weight: bold;
+  }
+
+  .absent {
+    color: #f44336;
+    font-weight: bold;
+  }
+
+  h2 {
+    color: #fff;
+  }
+
+
+
+
+

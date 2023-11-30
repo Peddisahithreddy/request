@@ -1,0 +1,52 @@
+<!-- <p>notification works!</p> -->
+<body>
+  <nav>
+    <div class="nav-left">
+        <!-- <img [src]="image" alt="Logo" class="logo2"> -->
+    </div>
+    <ul>
+      <li><a (click)="showadmindetails()"><img [src]="boy_icon" alt="Photo Icon" class="nav-icon">
+        </a></li>
+      
+      <li><a >Admin</a></li>
+      <li><a routerLink="/login">Logout</a></li>
+    </ul>
+  </nav>
+  <div class="admin-container" id="admin-details">
+    
+    <p id="adminname">Admin</p>
+    <p id="adminemail">admin@gmail.com</p>
+    <span class="close-button" (click)="hideNotification()">✖</span>
+  </div>
+
+    <div class="container">
+      <h1>Notification</h1>
+  
+      <div class="user-card">
+        <div class="user-info">
+          <img [src]="girl_icon"alt="User 1">
+          <span>User 1</span>
+        </div>
+        <div class="user-actions">
+          <button class="approve-btn"(click)="onsave()">Approve</button>
+          <button class="reject-btn"(click)="onsave1()">Reject</button>
+        </div>
+      </div>
+  
+      <div class="user-card">
+        <div class="user-info">
+          <img [src]="boy_icon" alt="User 2">
+          <span>User 2</span>
+        </div>
+        <div class="user-actions">
+          <button class="approve-btn"(click)="onsave()">Approve</button>
+          <button class="reject-btn"(click)="onsave1()">Reject</button>
+        </div>
+      </div>
+  
+      
+  
+    </div>
+  
+  </body>
+  

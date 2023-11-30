@@ -1,0 +1,54 @@
+<!-- <p>calendar-details works!</p> -->
+<body>
+  <nav>
+    <div class="nav-left">
+        <!-- <img [src]="image" alt="Logo" class="logo2"> -->
+     </div>
+    <ul>
+      <li><a><img [src]="boy_icon" alt="Photo Icon" class="nav-icon">
+        </a></li>
+
+      <li><a >Employee</a></li>
+      <li><a routerLink="/login">Logout</a></li>
+    </ul>
+   </nav>
+
+    <div class="user-info">
+      <h2>{{emp_name}}</h2>
+    </div>
+
+    <div class="calendar">
+      <div class="day">
+        <span class="day-name">Mon</span><br>
+        <span class="attendance present">Present</span>
+      </div>
+      <div class="day">
+        <span class="day-name">Tue</span><br>
+        <span class="attendance absent">Absent</span>
+      </div>
+      <div class="day">
+        <span class="day-name">Wed</span><br>
+        <span class="attendance present">Present</span>
+      </div>
+      <div class="day">
+        <span class="day-name">Thu</span><br>
+        <span class="attendance absent">Absent</span>
+      </div>
+      <div class="day">
+        <span class="day-name">Fri</span><br>
+        <span class="attendance present">Present</span>
+      </div>
+      <div class="day">
+        <span class="day-name">Sat</span><br>
+        <span class="attendance">----</span>
+      </div>
+      <div class="day">
+        <span class="day-name">Sun</span><br>
+        <span class="attendance">----</span>
+      </div>
+
+
+
+    </div>
+
+  </body>

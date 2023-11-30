@@ -1,0 +1,39 @@
+<!-- <p>details works!</p> -->
+<body>
+    <nav>
+        <div class="nav-left">
+            <!-- <img [src]="image" alt="Logo" class="logo2"> -->
+         </div>
+        <ul>
+          <li><a (click)="showadmindetails()"><img [src]="boy_icon" alt="Photo Icon" class="nav-icon">
+            </a></li>
+          
+          
+          <li><a routerLink="/login">Logout</a></li>
+        </ul> 
+       </nav> 
+       <div class="admin-container" id="admin-details">
+    
+        <p id="adminname">Admin</p>
+        <p id="adminemail">admin@gmail.com</p>
+        <span class="close-button" (click)="hideNotification()">✖</span>
+      </div>
+    <div class="user-card">
+        <div class="user-icon">
+            
+            <img [src]="girl_icon" alt="User Icon">
+            
+        </div>
+        <p class="info"><I><span class="name">Hello Juhi Singh!! </span></I></p>
+        
+        <div class="user-details">
+            
+            <p class="info"><span>Name</span> = Juhi Singh</p>
+            <p class="info"><span>Status</span> = <span class="status">Approved</span></p>
+            <p class="info"><span>Gender</span> = Female</p>
+            <p class="info"><span>ID</span> = 12345</p>
+            <p class="info"><span>Attendance</span> = Present</p>
+            <button type="submit"(click)="onsave()">Logout</button>
+        </div>
+    </div>
+</body>
