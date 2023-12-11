@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component,OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -6,10 +6,13 @@ import { Router } from '@angular/router';
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.css']
 })
-export class DetailsComponent {
+export class DetailsComponent implements OnInit{
   girl_icon="../assets/girl-icon.png"
   boy_icon="../assets/user-icon.png"
   constructor(private router: Router) {}
+  ngOnInit(): void {
+    console.log(history.state.data)
+  }
   onsave(){
 
   this.router.navigate(['/login']);

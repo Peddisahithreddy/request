@@ -1,6 +1,12 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/json',
+  }),
+};
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +20,8 @@ export class MarkleaveserviceService {
   addRequest(requestData: any): Observable<any> {
     const url = `${this.apiUrl}`;
     return this.http.post<any>(this.apiUrl,requestData);
-
-
-}
+  }
+  getRequest(): Observable<any> {
+    return this.http.get<any>(this.apiUrl)
+  }
 }

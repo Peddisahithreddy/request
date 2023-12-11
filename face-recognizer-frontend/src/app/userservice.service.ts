@@ -13,6 +13,13 @@ export class UserserviceService {
   getAllUsers(): Observable<any> {
     return this.http.get(this.Url)
   }
+
+  getUser(userId: number): Observable<any> {
+    const url = `${this.Url}/${userId}`;
+    return this.http.get(url);
+  }
+
+
   createUser(user:any): Observable<any> {
     const headers = new HttpHeaders({'Content-Type':'aplication/json'});
     return this.http.post(this.Url,JSON.stringify(user),{headers});

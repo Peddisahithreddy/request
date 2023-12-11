@@ -8,15 +8,14 @@ import { tr } from 'date-fns/locale';
   styleUrls: ['./welcome-admin.component.css']
 })
 export class WelcomeAdminComponent implements OnInit{
-  arr: string[] = []
+  arr: string = history.state.data;
   bell_icon="&#x1F514"
   bell="../assets/bell_icon1.jpg"
   boy_icon="../assets/user-icon.png"
   details: boolean = false;
   constructor(private router: Router) {}
   ngOnInit(): void {
-    this.arr = history.state.data
-    console.log(this.arr)
+    console.log("this is in welcome admin page",this.arr[0][0])
   }
 
   onsave(){

@@ -1,16 +1,32 @@
-import { Component } from '@angular/core';
+import { Component,OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserserviceService } from '../userservice.service';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css']
 })
-export class UserComponent {
+export class UserComponent implements OnInit {
   bell="../assets/bell.jpeg"
   boy_icon="../assets/user-icon.png"
   details: boolean = false;
-  constructor(private router: Router) {}
+  users!: string[];
+  userid: number = history.state.data
+  constructor(private router: Router,private userService: UserserviceService) {}
+  ngOnInit(): void {
+    console.log("data is : ",this.userid)
+
+    this.userService.getAllUsers().subscribe((data) => {
+      this.users = []
+
+      // this.users= data[0].username
+      // console.log(data)
+    for(let i = 0; i<data.length; i++){
+
+      this.users.push(data[i].username);
+      }
+  },)}
 
   onsave() {
     // Perform your authentication logic here.
@@ -21,6 +37,7 @@ export class UserComponent {
     this.router.navigate(['/details']);
   }
   onsave1(){
+
 
     this.router.navigate(['/add-user']);
     }
@@ -38,7 +55,7 @@ export class UserComponent {
       else{
         this.hideNotification();
       }
-  
+
     }
    hideNotification() {
      // Hide the notification box

@@ -70,7 +70,7 @@ class Admin(db.Model):
         cursor = db_handler.get_cursor()
 
         # Use the cursor for database operations
-        cursor.execute("select id from admin where username = %s",(username,))
+        cursor.execute("select * from admin where username = %s",(username,))
         result = cursor.fetchall()
 
         # Close the connection when done
@@ -99,6 +99,11 @@ class User(db.Model):
 def get_users():
     users = User.query.all()
     return jsonify([user.serialize() for user in users])
+
+def get_user(user_id):
+    user = User.query.get_or_404(user_id)
+    return jsonify(user.serialize())
+
 
 @app.route('/users', methods=['POST'])
 @cross_origin()
@@ -442,24 +447,31 @@ def post_request():
     db.session.add(request_data)
     db.session.commit()
     return jsonify({'message': 'Employee added successfully'})
-@app.route('/request', methods=['POST'])
+@app.route('/request', methods=['GET'])
 @cross_origin()
 def get_requests():
-    data = request.get_json()
+        # Query all requests from the database
+        requests = Request.query.all()
 
-    date_from = datetime.strptime(data['date_from'], '%Y-%m-%d')
-    date_to = datetime.strptime(data['date_to'], '%Y-%m-%d') if 'date_to' in data else datetime.utcnow()
-    request_type = data['request_type']
+        # Convert the list of requests to a list of dictionaries
+        requests_list =[ {
+                # 'request_id': requests.request_id,
+                'emp_id': request.emp_id,
+                'emp_name': request.emp_name,
+                'request_status': request.request_status,
+                'request_time': request.request_time.isoformat(),
+                'date_from': request.date_from.isoformat(),
+                'date_to': request.date_to.isoformat() if request.date_to else None,
+                'approved_by': request.approved_by,
+                'approved_time': request.approved_time.isoformat(),
+                'manager': request.manager,
+                'request_type': request.request_type,
+                'email': request.email
+            }
+            for request in requests]
 
-    requests = Request.query.filter(
-        Request.date_from >= date_from,
-        Request.date_to <= date_to if 'date_to' in data else datetime.utcnow(),
-        Request.request_type == request_type
-    ).all()
-
-    serialized_requests = [request.serialize() for request in requests]
-
-    return jsonify(serialized_requests), 200
+        # Return the list of requests as JSON
+        return jsonify({'requests': requests_list})
 class Absence(db.Model):
     leave_id = db.Column(db.Integer,primary_key = True)
     emp_id = db.Column(db.Integer, unique=False, nullable=False)

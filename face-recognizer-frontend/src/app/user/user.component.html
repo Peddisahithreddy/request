@@ -8,35 +8,35 @@
     <ul>
       <li><a  (click)="showNotification()"><img [src]="boy_icon" alt="Photo Icon" class="nav-icon">
         </a></li>
-       
-      
-      
+
+
+
       <!-- <li><a routerLink="/login">Logout</a></li> -->
     </ul>
   </nav>
   <div class="admin-container" id="admin-details">
-    
+
       <p id="adminname">Admin</p>
       <p id="adminemail">admin@gmail.com</p>
       <p id="adminemail">ID: 23456789</p>
 
-    
+
     <span class="Logout" (click)="onsave2()">Logout</span>
-     
+
     </div>
-    
+
 
 <div class="container">
-  <button class="add-button"(click)="onsave1()">Add User</button> 
-  
+  <button class="add-button"(click)="onsave1()">Add User</button>
+
 
   <table>
     <tr>
       <th class="heading">Users</th>
       <!-- <th>Action</th> -->
-    </tr>
-    <tr>
-      <td class="text">User 1</td>
+    </tr >
+    <tr *ngFor = "let user of users">
+      <td class="text">{{user}}</td>
       <td><button class="edit-button"(click)="onsave()">View</button></td>
     </tr>
     <tr>

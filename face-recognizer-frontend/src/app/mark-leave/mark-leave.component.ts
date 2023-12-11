@@ -61,25 +61,39 @@ export class MarkLeaveComponent implements OnInit {
 
   onsave(): void{
     if (this.empId && this.empName) {
-      const data = {
+      const formData = this.leaveForm.value;
+      const result = this.selectedLevel
+      console.log(result)
+      const requestTypeList = this.data.map(type => type.name);
+
+      const datajson = {
         emp_id: this.empId,
+        approved_by:this.empName,
         emp_name: this.empName,
         date_from: this.startDate,
         date_to: this.endDate,
-        request_type: this.selectedLevel
+        request_type: this.selectedLevel.toString() || '',
+        email:this.email,
+        manager:this.empName
       };
 
-      this.markleaveService.addRequest(data).subscribe((response) => {
+      this.markleaveService.addRequest(datajson).subscribe((response) => {
         console.log('Request added successfully:', response);
-      });}
-    const requestData = {
-      request_id: 1, /* assign a value or retrieve it from your form data */
-      // emp_id: data['emp_id'],
-      // emp_name: data['emp_name'],
-    }
-    const formData = this.leaveForm.value;
-    this.markleaveService.addRequest(formData).subscribe((response) =>
-    {console.log('Request added successfully:',response)})
+        const responseDataWithRequestType = {
+          ...response,
+          request_type: this.selectedLevel
+        };
+
+        console.log('Response with Request Type:', responseDataWithRequestType);
+      });
+      }
+    // const requestData = {
+    //   request_id: 1, /* assign a value or retrieve it from your form data */
+    //   // emp_id: data['emp_id'],
+    //   // emp_name: data['emp_name'],
+    // }
+    // this.markleaveService.addRequest(formData).subscribe((response) =>
+    // {console.log('Request added successfully:',response)})
   }
   // onsave(data:any):void{
 
