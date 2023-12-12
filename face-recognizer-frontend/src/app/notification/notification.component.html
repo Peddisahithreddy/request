@@ -22,10 +22,10 @@
     <div class="container">
       <h1>Notification</h1>
 
-      <div class = "user-card">
+      <div class = "user-card" *ngFor = "let user of users" >
         <div  class="user-info">
           <img [src]="girl_icon"alt="User 1">
-          <span>{{users | json}}</span>
+          <span>{{user}}</span>
         </div>
         <div class="user-actions">
           <button class="approve-btn"(click)="onsave()">Approve</button>
