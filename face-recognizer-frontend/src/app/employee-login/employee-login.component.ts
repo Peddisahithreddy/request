@@ -17,9 +17,10 @@ export class EmployeeLoginComponent {
   onsave(){
     this.employeeService.login(this.username,this.password).subscribe((response) => {
       this.users= response
+      console.log(response)
       this.arr = this.users.map(Number)
       console.log(this.users)
-      this.router.navigate(['/welcome-employee'],{state:{data:this.users[0]}});
+      this.router.navigate(['/welcome-employee'],{state:{data:this.users}});
 
 
     },)

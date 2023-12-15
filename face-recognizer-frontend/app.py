@@ -224,6 +224,7 @@ class Employee(db.Model):
         self.username = username
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
+
     def set_password(self, password):
         self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
 
@@ -281,12 +282,7 @@ class Employee(db.Model):
 
 
 
-@app.route('/employees/results',methods = ['GET'])
-@cross_origin()
-def current_employees():
-    employee = Employee.query.filter_by(emp_id = Employee.employee_id.results).first()
-    employee_list = [employee.to_dict() for employee in employee]
-    return jsonify({"employees": employee_list})
+
 
 @app.route('/employees', methods=['GET'])
 @cross_origin()
@@ -322,6 +318,7 @@ def get_employee(emp_id):
 def add_employee():
     data = request.get_json()
 
+
     new_employee = Employee(
         emp_id=data['emp_id'],
         emp_name=data['emp_name'],
@@ -331,11 +328,14 @@ def add_employee():
         age=data['age'],
         contact_no=data['contact_no'],
         username=data['username'],
-        password=data['password']  # Assuming the password is already hashed on the client side
+        password=data['password']
     )
+
+
 
     db.session.add(new_employee)
     db.session.commit()
+    # return "this post function is executed"
 
     return jsonify({'message': 'Employee added successfully'})
 
@@ -512,7 +512,37 @@ def post_absence():
   db.session.commit()
 
   return jsonify({'message': 'Employee added successfully'})
+class Attendance(db.Model):
+    attendance_id = db.Column(db.Integer, primary_key=True)
+    emp_id = db.Column(db.Integer,nullable = False)
+    emp_name = db.Column(db.String(100), nullable=False)
+    date = db.Column(db.Date, default=datetime.utcnow().date)
+    status = db.Column(db.String(10), nullable=False)
 
+    def serialize(self):
+        return {
+            'attendance_id':self.attendance_id,
+            'emp_id':self.emp_id,
+            'emp_name':self.emp_name,
+            'date':self.date,
+            'status':self.status
+        }
+
+@app.route('/attendance', methods=['PUT'])
+@cross_origin()
+def add_attendance():
+    data = request.get_json()
+
+    new_attendance = Attendance(emp_name=data['emp_name'], status=data['status'],emp_id = data['emp_id'])
+    db.session.add(new_attendance)
+    db.session.commit()
+
+    return jsonify("Attendance is updated!")
+@app.route('/attendance',methods=['GET'])
+@cross_origin()
+def get_attendance():
+    attendances = Attendance.query.all()
+    return jsonify([attendance.serialize() for attendance in attendances])
 
 if __name__ == '__main__':
     db.create_all()

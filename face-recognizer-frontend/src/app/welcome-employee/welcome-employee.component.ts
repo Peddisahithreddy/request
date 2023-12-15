@@ -13,10 +13,13 @@ export class WelcomeEmployeeComponent {
   user_id!: string
   emp_name!: string
   emp_id!: number
+  email: string = history.state.data[4]
+
 
   constructor(private router: Router,private employeeServie: EmployeeserviceService) {}
-  users: number = history.state.data[1]
+  users: number = history.state.data[0][1]
   result: [] = history.state.data
+
 
   ngOnInit(): void {
     this.employeeServie.getEmployeeById(this.users).subscribe((data) =>{
@@ -24,6 +27,7 @@ export class WelcomeEmployeeComponent {
       this.emp_name = data.emp_name.emp_name
       this.emp_id = data.emp_name.emp_id
       console.log(this.users)
+
 
     })
      }
@@ -36,7 +40,9 @@ export class WelcomeEmployeeComponent {
   onsave3(){
     this.router.navigate(['/mark-leave'],{state:{data:this.result}})
   }
-  onsave4(){}
+  onsave4(){
+    this.router.navigate(['/regularize-attendance'],{state:{data:this.result}})
+  }
   showadmindetails(){
     // Show the notification box
     const admindetails = document.getElementById('admin-details') as HTMLDivElement;

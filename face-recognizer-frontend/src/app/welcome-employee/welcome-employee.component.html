@@ -9,7 +9,7 @@
           <li><a><img [src]="boy_icon" alt="Photo Icon" class="nav-icon">
             </a></li>
 
-          <li><a >Employee</a></li>
+          <li><a >{{emp_name}}</a></li>
           <li><a routerLink="/login">Logout</a></li>
         </ul>
       </nav>
@@ -28,7 +28,8 @@
         <div class="options">
           <button type = "submit"(click) = "onsave2()">View Attendance</button>
           <button type = "submit"(click) = "onsave3()">Mark Leave</button>
-            <a href="regularize-attendance">Regularize Attendance</a>
+          <button type = "submit"(click) = "onsave4()">Regularize Attendance</button>
+
         </div>
 
     </div>

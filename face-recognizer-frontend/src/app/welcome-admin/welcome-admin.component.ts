@@ -19,8 +19,9 @@ export class WelcomeAdminComponent implements OnInit{
   }
 
   onsave(){
+    this.arr = history.state.data
 
-  this.router.navigate(['/notification']);
+  this.router.navigate(['/notification'],{state:{data:this.arr}});
   }
   onsave1(){
 
@@ -40,7 +41,7 @@ export class WelcomeAdminComponent implements OnInit{
           }
           showNotification() {
             this.details = !this.details
-            if (this.details == true)
+            if (this.details)
             {
               const admindetails = document.getElementById('admin-details') as HTMLDivElement;
               admindetails.style.display = 'block';
