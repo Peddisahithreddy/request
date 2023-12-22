@@ -11,13 +11,13 @@ import { EmployeeserviceService } from '../employeeservice.service';
   styleUrls: ['./mark-leave.component.css']
 })
 export class MarkLeaveComponent implements OnInit {
-  empId: number = history.state.data[1];
-  empName: string = history.state.data[2];
-  email: string = history.state.data[6];
+  empId: number = history.state.data[0][1];
+  empName: string = history.state.data[0][2];
+  email: string = history.state.data[0][6];
   startDate!: string;
   endDate!: string;
   leaveForm: FormGroup;
-  selectedLevel!: string;
+  selectedLevel!: any;
   constructor(private http:HttpClient,private fb: FormBuilder,
     private markleaveService: MarkleaveserviceService,private employeeService: EmployeeserviceService){
     this.leaveForm = this.fb.group({
@@ -33,6 +33,7 @@ export class MarkLeaveComponent implements OnInit {
     });
   }
   ngOnInit(): void {
+    console.log("State variable value is : ",history.state.data)
     this.employeeService.getEmployeeById(this.empId).subscribe((data) =>
 
     {this.empId = data.emp_name.emp_id,
@@ -63,7 +64,7 @@ export class MarkLeaveComponent implements OnInit {
     if (this.empId && this.empName) {
       const formData = this.leaveForm.value;
       const result = this.selectedLevel
-      console.log(result)
+      console.log("reason for the leave",result)
       const requestTypeList = this.data.map(type => type.name);
 
       const datajson = {
@@ -72,7 +73,7 @@ export class MarkLeaveComponent implements OnInit {
         emp_name: this.empName,
         date_from: this.startDate,
         date_to: this.endDate,
-        request_type: this.selectedLevel.toString() || '',
+        request_type: this.selectedLevel.name,
         email:this.email,
         manager:this.empName
       };

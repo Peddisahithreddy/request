@@ -9,30 +9,30 @@
         <ul>
           <li><a (click)="showadmindetails()"><img [src]="boy_icon" alt="Photo Icon" class="nav-icon">
             </a></li>
-          
-          
+
+
           <li><a routerLink="/login">Logout</a></li>
         </ul>
       </nav>
       <div class="admin_container" id="admin-details">
-    
+
         <p id="adminname">Admin</p>
         <p id="adminemail">admin@gmail.com</p>
         <span class="close-button" (click)="hideNotification()">✖</span>
       </div>
 
-    <div class="admin-container">
+      <div class="admin-container">
         <h1>Attendance Management</h1>
 
-        <form class="attendance-form">
+        <form class="attendance-form" (ngSubmit)="onsave()">
             <label for="name">Name:</label>
-            <input type="text" id="name" placeholder="Enter name" required>
+            <input type="text" id="name" name="name" [(ngModel)]="name" placeholder="Enter name" required>
 
             <label for="id">ID:</label>
-            <input type="text" id="id" placeholder="Enter ID" required>
+            <input type="text" id="id" name="id" [(ngModel)]="id" placeholder="Enter ID" required>
 
             <label for="status">Status:</label>
-            <select id="status">
+            <select id="status" name="status" [(ngModel)]="status">
                 <option value="present">Present</option>
                 <option value="absent">Absent</option>
             </select>

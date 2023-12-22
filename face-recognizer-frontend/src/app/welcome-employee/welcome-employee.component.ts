@@ -26,7 +26,7 @@ export class WelcomeEmployeeComponent {
 
       this.emp_name = data.emp_name.emp_name
       this.emp_id = data.emp_name.emp_id
-      console.log(this.users)
+      console.log(this.result)
 
 
     })

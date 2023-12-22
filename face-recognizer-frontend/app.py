@@ -247,7 +247,8 @@ class Employee(db.Model):
         }
     def to_empname(self):
         return{
-            'emp_name':self.emp_name
+            'emp_name':self.emp_name,
+
         }
 
 
@@ -288,7 +289,7 @@ class Employee(db.Model):
 @cross_origin()
 def get_all_employees():
     employees = Employee.query.all()
-    employees_list = [employee.to_empname() for employee in employees]
+    employees_list = [employee.to_dict() for employee in employees]
     return employees_list
 
 @app.route('/employees/<int:emp_id>', methods=['GET'])
@@ -380,8 +381,8 @@ class Request(db.Model):
     request_status = db.Column(db.String(20),default = "pending",nullable = False)
     request_time = db.Column(db.DateTime, nullable = False,default = datetime.utcnow)
     date_from = db.Column(db.DateTime,nullable = False)
-    date_to =db.Column(db.DateTime)
-    approved_by = db.Column(db.String(50),nullable = False)
+    date_to =db.Column(db.DateTime,nullable = True)
+    approved_by = db.Column(db.String(50),nullable = True)
     approved_time = db.Column(db.DateTime, nullable = False)
     manager = db.Column(db.String(100),nullable = False)
     request_type = db.Column(db.String(100),nullable = False)
@@ -471,7 +472,7 @@ def get_requests():
             for request in requests]
 
         # Return the list of requests as JSON
-        return jsonify({'requests': requests_list})
+        return requests_list
 class Absence(db.Model):
     leave_id = db.Column(db.Integer,primary_key = True)
     emp_id = db.Column(db.Integer, unique=False, nullable=False)
@@ -516,7 +517,7 @@ class Attendance(db.Model):
     attendance_id = db.Column(db.Integer, primary_key=True)
     emp_id = db.Column(db.Integer,nullable = False)
     emp_name = db.Column(db.String(100), nullable=False)
-    date = db.Column(db.Date, default=datetime.utcnow().date)
+    date = db.Column(db.Date, default=lambda: datetime.utcnow().date())
     status = db.Column(db.String(10), nullable=False)
 
     def serialize(self):
@@ -527,6 +528,22 @@ class Attendance(db.Model):
             'date':self.date,
             'status':self.status
         }
+
+@app.route('/attendance',methods=['POST'])
+@cross_origin()
+def post_attendance():
+    data = request.get_json()
+    new_attendance = Attendance(
+            emp_id=data['emp_id'],
+            emp_name=data['emp_name'],
+            status=data['status']
+        )
+
+    db.session.add(new_attendance)
+    db.session.commit()
+
+    return jsonify({'message': 'Attendance record created successfully'}), 201
+
 
 @app.route('/attendance', methods=['PUT'])
 @cross_origin()
@@ -541,8 +558,11 @@ def add_attendance():
 @app.route('/attendance',methods=['GET'])
 @cross_origin()
 def get_attendance():
+    current_date = datetime.utcnow().date
     attendances = Attendance.query.all()
     return jsonify([attendance.serialize() for attendance in attendances])
+
+
 
 if __name__ == '__main__':
     db.create_all()

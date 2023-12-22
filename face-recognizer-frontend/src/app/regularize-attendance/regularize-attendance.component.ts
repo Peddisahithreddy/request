@@ -1,6 +1,7 @@
 import { Component,OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AttendanceService } from '../attendance.service';
+import { MarkleaveserviceService } from '../markleaveservice.service';
 
 
 @Component({
@@ -11,7 +12,8 @@ import { AttendanceService } from '../attendance.service';
 export class RegularizeAttendanceComponent implements OnInit{
   empName: string = history.state.data[0][2]
   empId: number = history.state.data[0][1]
-  constructor(private router: Router,private attendanceService: AttendanceService){}
+  email: string = history.state.data[0][4]
+  constructor(private router: Router,private markleaveService: MarkleaveserviceService){}
   ngOnInit(): void {
     console.log("state data value:",history.state.data)
     console.log("emp_name and emp_id values are : ",this.empName,this.empId)
@@ -20,9 +22,13 @@ export class RegularizeAttendanceComponent implements OnInit{
     const datajson = {
       emp_id: this.empId,
       emp_name:this.empName,
-      status: "present"
+      status: "present",
+      request_type: "Regularize attendance",
+      approved_by: this.empName,
+      manager: this.empName,
+      email:this.email
     }
-    this.attendanceService.post_attendance(datajson).subscribe((response) =>{
+    this.markleaveService.addRequest(datajson).subscribe((response) =>{
       console.log("regularize attendance response is :",response)
     }
     )

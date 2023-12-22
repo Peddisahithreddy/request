@@ -1,18 +1,24 @@
-import { Component,OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component,OnInit,inject } from '@angular/core';
+import { Router,ActivatedRoute } from '@angular/router';
+import { EmployeeserviceService } from '../employeeservice.service';
 
 @Component({
   selector: 'app-details',
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.css']
 })
-export class DetailsComponent implements OnInit{
+export class DetailsComponent {
   girl_icon="../assets/girl-icon.png"
   boy_icon="../assets/user-icon.png"
-  constructor(private router: Router) {}
-  ngOnInit(): void {
-    console.log(history.state.data)
-  }
+  route: ActivatedRoute = inject(ActivatedRoute);
+    employeeid = -1;
+    constructor(private router: Router,private employeeService: EmployeeserviceService) {
+        this.employeeid = Number(this.route.snapshot.params['emp_id']);
+        this.employeeService.getEmployeeById(this.employeeid).subscribe((response) => {console.log(response)})
+    }
+  // ngOnInit(): void {
+  //   console.log("emp_id is : ",this.employeeid)
+  // }
   onsave(){
 
   this.router.navigate(['/login']);

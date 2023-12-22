@@ -1,6 +1,6 @@
 import { Component,OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserserviceService } from '../userservice.service';
+import { EmployeeserviceService } from '../employeeservice.service';
 
 @Component({
   selector: 'app-user',
@@ -10,34 +10,35 @@ import { UserserviceService } from '../userservice.service';
 export class UserComponent implements OnInit {
   bell="../assets/bell.jpeg"
   boy_icon="../assets/user-icon.png"
+  employees: any = [];
+  emp_ids: number[] =[];
   details: boolean = false;
-  users!: string[];
-  userid: number = history.state.data
-  constructor(private router: Router,private userService: UserserviceService) {}
+  constructor(private router: Router,private employeeService: EmployeeserviceService) {}
   ngOnInit(): void {
-    console.log("data is : ",this.userid)
+    this.employeeService.getAllEmployee().subscribe((response) =>{
+      this.employees = response
 
-    this.userService.getAllUsers().subscribe((data) => {
-      this.users = []
 
-      // this.users= data[0].username
-      // console.log(data)
-    for(let i = 0; i<data.length; i++){
-
-      this.users.push(data[i].username);
-      }
-  },)}
+    })
+  }
 
   onsave() {
+    this.employeeService.getAllEmployee().subscribe((response) => {
+      for (let i = 0; i <response.length; i++){
+        this.employeeService.getEmployeeById(response[i].emp_id).subscribe((response) => {
+          console.log(response)
+        })
+      }
+      //this.employeeService.getEmployeeById()
+    })
     // Perform your authentication logic here.
     // For simplicity, let's assume validation always succeeds.
     // In a real application, you'd check user credentials against a backend service.
 
     // Redirect to the home page upon successful login.
-    this.router.navigate(['/details']);
+    this.router.navigate(['/details'],{state:{data:this.emp_ids}});
   }
   onsave1(){
-
 
     this.router.navigate(['/add-user']);
     }
