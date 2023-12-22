@@ -22,9 +22,9 @@
     <div class="attendance-status">
     <h2>Attendance Status</h2></div>
 
-    <div class="user-status" *ngFor = "let data of attendance">
-      <span class="user-name"(click)="onsave()">{{data}}</span>
-      <div class="present">Present</div>
+    <div class="user-status" *ngFor = "let attendance of attendances">
+      <span class="user-name"(click)="onsave()">{{attendance.emp_name}}</span>
+      <div class="present">{{attendance.status}}</div>
     </div>
 
     <div class="user-status">

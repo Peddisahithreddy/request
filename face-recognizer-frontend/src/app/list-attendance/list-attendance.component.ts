@@ -9,16 +9,13 @@ import { AttendanceService } from '../attendance.service';
 })
 export class ListAttendanceComponent implements OnInit{
   boy_icon="../assets/user-icon.png"
-  attendance: string[] =[]
+  attendances: any[] =[]
 
   constructor(private router: Router, private attendanceService: AttendanceService) {}
   ngOnInit(): void {
     this.attendanceService.get_attendance().subscribe((response) =>
-    {for (let i=0; i<response.length; i++){
-      this.attendance.push(response[i].emp_name)
-      console.log(response[i].emp_name)
-    }},)
-  }
+    this.attendances = response
+  )}
   onsave(){
 
   this.router.navigate(['/calendar-details']);

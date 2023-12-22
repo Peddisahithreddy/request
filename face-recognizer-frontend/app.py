@@ -559,7 +559,7 @@ def add_attendance():
 @cross_origin()
 def get_attendance():
     current_date = datetime.utcnow().date
-    attendances = Attendance.query.all()
+    attendances = Attendance.query.filter_by(date = datetime.utcnow().date())
     return jsonify([attendance.serialize() for attendance in attendances])
 
 
