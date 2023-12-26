@@ -19,6 +19,7 @@ import { SentRequestComponent } from './sent-request/sent-request.component';
 import { RegularizeAttendanceComponent } from './regularize-attendance/regularize-attendance.component';
 import { AttendanceManagementComponent } from './attendance-management/attendance-management.component';
 import { MarkLeaveComponent } from './mark-leave/mark-leave.component';
+import { MarkAttendanceFormComponent } from './mark-attendance-form/mark-attendance-form.component';
 const routes: Routes = [
   { path: '', redirectTo: '/attendance', pathMatch: 'full' },
   {path: 'attendance', component: AttendanceComponent},
@@ -27,7 +28,7 @@ const routes: Routes = [
   {path:'popup',component:PopupComponent},
   {path:'login',component:LoginComponent},
   {path:'user',component:UserComponent},
-  {path:'details',component:DetailsComponent},
+  {path:'details/:emp_id',component:DetailsComponent},
   {path:'add-user',component:AddUserComponent},
   {path:'welcome-admin',component:WelcomeAdminComponent},
   {path:'notification',component:NotificationComponent},
@@ -39,8 +40,9 @@ const routes: Routes = [
   {path: 'sent-request',component:SentRequestComponent},
   {path:'regularize-attendance',component:RegularizeAttendanceComponent},
   {path: 'attendance-management',component:AttendanceManagementComponent},
-  {path: 'mark-leave', component:MarkLeaveComponent}
-  
+  {path: 'mark-leave', component:MarkLeaveComponent},
+  {path:'mark-attendance-form',component:MarkAttendanceFormComponent}
+
 
 
 ];

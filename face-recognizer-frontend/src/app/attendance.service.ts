@@ -23,7 +23,7 @@ export class AttendanceService {
 
   post_attendance(datajson: any): Observable<any>{
     const url = `${this.Url}`;
-    return this.http.put(this.Url,datajson,httpOptions)
+    return this.http.post(this.Url,datajson,httpOptions)
   }
   get_attendance(): Observable<any>{
     const url = `${this.Url}`

@@ -21,7 +21,7 @@ import { CalendarDetailsComponent } from './calendar-details/calendar-details.co
 import { EmployeeLoginComponent } from './employee-login/employee-login.component';
 import { WelcomeEmployeeComponent } from './welcome-employee/welcome-employee.component';
 import { AttendanceCalendarComponent } from './attendance-calendar/attendance-calendar.component'
-import { FullCalendarModule } from '@fullcalendar/angular';
+// import { FullCalendarModule } from '@fullcalendar/angular';
 
 import { SentRequestComponent } from './sent-request/sent-request.component';
 import { RegularizeAttendanceComponent } from './regularize-attendance/regularize-attendance.component';
@@ -29,6 +29,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CalendarModule } from 'angular-calendar';
 import { AttendanceManagementComponent } from './attendance-management/attendance-management.component';
 import { MarkLeaveComponent } from './mark-leave/mark-leave.component';
+import { MarkAttendanceFormComponent } from './mark-attendance-form/mark-attendance-form.component';
 
 
 
@@ -46,26 +47,28 @@ import { MarkLeaveComponent } from './mark-leave/mark-leave.component';
     WelcomeAdminComponent,
     NotificationComponent,
     ListAttendanceComponent,
-    
+    MarkLeaveComponent,
+
     CalendarDetailsComponent,
           EmployeeLoginComponent,
           WelcomeEmployeeComponent,
           AttendanceCalendarComponent,
-          
+
           SentRequestComponent,
                       RegularizeAttendanceComponent,
                       AttendanceManagementComponent,
                       MarkLeaveComponent,
-    
-    
-   
+                      MarkAttendanceFormComponent,
+
+
+
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    FullCalendarModule,
+    // FullCalendarModule,
     BrowserAnimationsModule,
     CalendarModule,
   ],

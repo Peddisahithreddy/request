@@ -7,15 +7,17 @@ import { EmployeeserviceService } from '../employeeservice.service';
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.css']
 })
-export class DetailsComponent {
+export class DetailsComponent  implements OnInit{
   girl_icon="../assets/girl-icon.png"
   boy_icon="../assets/user-icon.png"
   route: ActivatedRoute = inject(ActivatedRoute);
     employeeid = -1;
     constructor(private router: Router,private employeeService: EmployeeserviceService) {
         this.employeeid = Number(this.route.snapshot.params['emp_id']);
-        this.employeeService.getEmployeeById(this.employeeid).subscribe((response) => {console.log(response)})
     }
+  ngOnInit(): void {
+    this.employeeService.getEmployeeById(this.employeeid).subscribe((response) => {console.log(response.emp_name.emp_name)})
+  }
   // ngOnInit(): void {
   //   console.log("emp_id is : ",this.employeeid)
   // }

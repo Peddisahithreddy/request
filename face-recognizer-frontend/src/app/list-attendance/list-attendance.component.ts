@@ -13,9 +13,11 @@ export class ListAttendanceComponent implements OnInit{
 
   constructor(private router: Router, private attendanceService: AttendanceService) {}
   ngOnInit(): void {
-    this.attendanceService.get_attendance().subscribe((response) =>
-    this.attendances = response
-  )}
+    this.attendanceService.get_attendance().subscribe((response) =>{
+    this.attendances = response;
+    console.log(response)
+
+    })}
   onsave(){
 
   this.router.navigate(['/calendar-details']);

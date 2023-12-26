@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: fbf9b1706382
+Revision ID: ceda39b58160
 Revises: 
-Create Date: 2023-12-14 12:49:25.431618
+Create Date: 2023-12-26 15:55:57.075794
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'fbf9b1706382'
+revision = 'ceda39b58160'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -42,7 +42,10 @@ def upgrade():
     sa.Column('attendance_id', sa.Integer(), nullable=False),
     sa.Column('emp_id', sa.Integer(), nullable=False),
     sa.Column('emp_name', sa.String(length=100), nullable=False),
-    sa.Column('date', sa.DateTime(), nullable=True),
+    sa.Column('entry_time', sa.DateTime(), nullable=False),
+    sa.Column('exit_out', sa.DateTime(), nullable=True),
+    sa.Column('duration', sa.Date(), nullable=True),
+    sa.Column('date', sa.Date(), nullable=True),
     sa.Column('status', sa.String(length=10), nullable=False),
     sa.PrimaryKeyConstraint('attendance_id')
     )
@@ -70,7 +73,7 @@ def upgrade():
     sa.Column('request_time', sa.DateTime(), nullable=False),
     sa.Column('date_from', sa.DateTime(), nullable=False),
     sa.Column('date_to', sa.DateTime(), nullable=True),
-    sa.Column('approved_by', sa.String(length=50), nullable=False),
+    sa.Column('approved_by', sa.String(length=50), nullable=True),
     sa.Column('approved_time', sa.DateTime(), nullable=False),
     sa.Column('manager', sa.String(length=100), nullable=False),
     sa.Column('request_type', sa.String(length=100), nullable=False),

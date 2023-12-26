@@ -513,12 +513,42 @@ def post_absence():
   db.session.commit()
 
   return jsonify({'message': 'Employee added successfully'})
+
 class Attendance(db.Model):
     attendance_id = db.Column(db.Integer, primary_key=True)
     emp_id = db.Column(db.Integer,nullable = False)
     emp_name = db.Column(db.String(100), nullable=False)
+    entry_time = db.Column(db.DateTime,nullable = True)
+    exit_time = db.Column(db.DateTime,nullable = True)
     date = db.Column(db.Date, default=lambda: datetime.utcnow().date())
     status = db.Column(db.String(10), nullable=False)
+
+
+
+    def mark_entry_exit(self):
+        current_time = datetime.utcnow()
+
+        # Check if there is an existing record for today
+        today_record = Attendance.query.filter_by(emp_id=self.emp_id, date=current_time.date()).first()
+
+        if today_record:
+            # Update the exit time for the existing record
+            today_record.exit_time = current_time
+            today_record.duration = today_record.exit_time - today_record.entry_time
+        else:
+            # Create a new record for entry
+            self.entry_time = current_time
+            self.exit_time = current_time  # Set exit_time explicitly
+            self.status = "Present"
+
+            # Add the new record to the database
+            db.session.add(self)
+
+        # Commit the changes to the database
+        db.session.commit()
+
+
+
 
     def serialize(self):
         return {
@@ -529,48 +559,46 @@ class Attendance(db.Model):
             'status':self.status
         }
 
-@app.route('/attendance',methods = ['GET'])
-def get_weekly_attendance_by_day():
-    today = datetime.utcnow().date()
-    start_of_week = today - timedelta(days=(today.weekday() + 1))
+@app.route('/attendance', methods=['POST'])
+def mark_entry_exit():
+    data = request.json
+    emp_id = data.get('emp_id')
+    emp_name = data.get('emp_name')
 
-    days_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-    weekly_attendance = {day: [] for day in days_of_week}
+    if emp_id is None or emp_name is None:
+        return jsonify({'error': 'emp_id and emp_name are required'}), 400
 
-    for i in range(7):
-        current_day = days_of_week[i]
-        current_date = start_of_week + timedelta(days=i)
-        daily_attendance = Attendance.query.filter_by(date=current_date).all()
-        serialized_attendance = [attendance.serialize() for attendance in daily_attendance]
-        weekly_attendance[current_day] = serialized_attendance
+    attendance_entry_exit = Attendance(emp_id=emp_id, emp_name=emp_name)
+    attendance_entry_exit.mark_entry_exit()
 
-    return jsonify(weekly_attendance)
-@app.route('/attendance',methods=['POST'])
-@cross_origin()
-def post_attendance():
-    data = request.get_json()
-    new_attendance = Attendance(
-            emp_id=data['emp_id'],
-            emp_name=data['emp_name'],
-            status=data['status']
-        )
+    return jsonify({'message': 'Entry/Exit marked successfully'}), 200
 
-    db.session.add(new_attendance)
-    db.session.commit()
+# @app.route('/attendance',methods=['POST'])
+# @cross_origin()
+# def post_attendance():
+#     data = request.get_json()
+#     new_attendance = Attendance(
+#             emp_id=data['emp_id'],
+#             emp_name=data['emp_name'],
+#             status=data['status']
+#         )
 
-    return jsonify({'message': 'Attendance record created successfully'}), 201
+#     db.session.add(new_attendance)
+#     db.session.commit()
+
+#     return jsonify({'message': 'Attendance record created successfully'}), 201
 
 
-@app.route('/attendance', methods=['PUT'])
-@cross_origin()
-def add_attendance():
-    data = request.get_json()
+# @app.route('/attendance', methods=['PUT'])
+# @cross_origin()
+# def add_attendance():
+#     data = request.get_json()
 
-    new_attendance = Attendance(emp_name=data['emp_name'], status=data['status'],emp_id = data['emp_id'])
-    db.session.add(new_attendance)
-    db.session.commit()
+#     new_attendance = Attendance(emp_name=data['emp_name'], status=data['status'],emp_id = data['emp_id'])
+#     db.session.add(new_attendance)
+#     db.session.commit()
 
-    return jsonify("Attendance is updated!")
+#     return jsonify("Attendance is updated!")
 @app.route('/attendance',methods=['GET'])
 @cross_origin()
 def get_attendance():
