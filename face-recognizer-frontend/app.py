@@ -1,6 +1,6 @@
 import ast
 from asyncio import Event, events
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 from flask import Flask, request, jsonify
 import mysql.connector
@@ -529,6 +529,22 @@ class Attendance(db.Model):
             'status':self.status
         }
 
+@app.route('/attendance',methods = ['GET'])
+def get_weekly_attendance_by_day():
+    today = datetime.utcnow().date()
+    start_of_week = today - timedelta(days=(today.weekday() + 1))
+
+    days_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    weekly_attendance = {day: [] for day in days_of_week}
+
+    for i in range(7):
+        current_day = days_of_week[i]
+        current_date = start_of_week + timedelta(days=i)
+        daily_attendance = Attendance.query.filter_by(date=current_date).all()
+        serialized_attendance = [attendance.serialize() for attendance in daily_attendance]
+        weekly_attendance[current_day] = serialized_attendance
+
+    return jsonify(weekly_attendance)
 @app.route('/attendance',methods=['POST'])
 @cross_origin()
 def post_attendance():

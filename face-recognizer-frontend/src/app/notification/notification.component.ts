@@ -24,7 +24,9 @@ export class NotificationComponent implements OnInit{
   ngOnInit(): void {
       this.markleaveService.getRequest().subscribe((response) => {
         this.leaves = response
-        console.log(response)
+        for (let i = 0; i < response.length; i++){
+          console.log(response[i].emp_name)
+        }
       })
 
 

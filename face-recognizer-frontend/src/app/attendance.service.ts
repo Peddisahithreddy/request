@@ -16,6 +16,11 @@ export class AttendanceService {
   constructor(private http:HttpClient) { }
   Url = 'http://127.0.0.1:5000/attendance'
 
+  get_week_attendance(): Observable<any>{
+    //const url = `${this.Url}`
+    return this.http.get(this.Url)
+  }
+
   post_attendance(datajson: any): Observable<any>{
     const url = `${this.Url}`;
     return this.http.put(this.Url,datajson,httpOptions)

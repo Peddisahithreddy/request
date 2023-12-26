@@ -18,9 +18,9 @@
     </div>
 
     <div class="calendar">
-      <div class="day">
+      <div class="day" *ngFor = "let attendance of attendances">
         <span class="day-name">Mon</span><br>
-        <span class="attendance present">Present</span>
+        <span class="attendance present">{{attendance.status}}</span>
       </div>
       <div class="day">
         <span class="day-name">Tue</span><br>
