@@ -17,6 +17,7 @@ import {FormsModule} from '@angular/forms';
 import { NotificationComponent } from './notification/notification.component';
 import { ListAttendanceComponent } from './list-attendance/list-attendance.component';
 
+
 import { CalendarDetailsComponent } from './calendar-details/calendar-details.component';
 import { EmployeeLoginComponent } from './employee-login/employee-login.component';
 import { WelcomeEmployeeComponent } from './welcome-employee/welcome-employee.component';
@@ -26,10 +27,11 @@ import { AttendanceCalendarComponent } from './attendance-calendar/attendance-ca
 import { SentRequestComponent } from './sent-request/sent-request.component';
 import { RegularizeAttendanceComponent } from './regularize-attendance/regularize-attendance.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CalendarModule } from 'angular-calendar';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { AttendanceManagementComponent } from './attendance-management/attendance-management.component';
 import { MarkLeaveComponent } from './mark-leave/mark-leave.component';
 import { MarkAttendanceFormComponent } from './mark-attendance-form/mark-attendance-form.component';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 
 
@@ -62,6 +64,7 @@ import { MarkAttendanceFormComponent } from './mark-attendance-form/mark-attenda
 
 
 
+
   ],
   imports: [
     BrowserModule,
@@ -71,6 +74,11 @@ import { MarkAttendanceFormComponent } from './mark-attendance-form/mark-attenda
     // FullCalendarModule,
     BrowserAnimationsModule,
     CalendarModule,
+    BrowserAnimationsModule,
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]

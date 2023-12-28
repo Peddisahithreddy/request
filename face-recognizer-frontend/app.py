@@ -312,7 +312,7 @@ def get_employee(emp_id):
         'password': employees.password,
     }
 
-    return jsonify({'emp_name': employee_data})
+    return employee_data
 
 @app.route('/employees', methods=['POST'])
 @cross_origin()
@@ -528,24 +528,27 @@ class Attendance(db.Model):
     def mark_entry_exit(self):
         current_time = datetime.utcnow()
 
+
         # Check if there is an existing record for today
+        emp_exists = Employee.query.filter_by(emp_id = self.emp_id).first()
         today_record = Attendance.query.filter_by(emp_id=self.emp_id, date=current_time.date()).first()
+        print(f"emp exist data is : ",emp_exists)
+        if emp_exists:
+          if today_record:
+              # Update the exit time for the existing record
+              today_record.exit_time = current_time
+              today_record.duration = today_record.exit_time - today_record.entry_time
+          else:
+              # Create a new record for entry
+              self.entry_time = current_time
+              self.exit_time = current_time  # Set exit_time explicitly
+              self.status = "Present"
 
-        if today_record:
-            # Update the exit time for the existing record
-            today_record.exit_time = current_time
-            today_record.duration = today_record.exit_time - today_record.entry_time
-        else:
-            # Create a new record for entry
-            self.entry_time = current_time
-            self.exit_time = current_time  # Set exit_time explicitly
-            self.status = "Present"
+              # Add the new record to the database
+              db.session.add(self)
 
-            # Add the new record to the database
-            db.session.add(self)
-
-        # Commit the changes to the database
-        db.session.commit()
+          # Commit the changes to the database
+          db.session.commit()
 
 
 
@@ -566,7 +569,9 @@ def mark_entry_exit():
     emp_name = data.get('emp_name')
 
     if emp_id is None or emp_name is None:
-        return jsonify({'error': 'emp_id and emp_name are required'}), 400
+        print(f"emp_id is :",emp_id,"emp_name is :",emp_name)
+        return jsonify({'messsage': 'emp_id and emp_name are required'}), 400
+
 
     attendance_entry_exit = Attendance(emp_id=emp_id, emp_name=emp_name)
     attendance_entry_exit.mark_entry_exit()

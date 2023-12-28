@@ -10,13 +10,27 @@ import { EmployeeserviceService } from '../employeeservice.service';
 export class DetailsComponent  implements OnInit{
   girl_icon="../assets/girl-icon.png"
   boy_icon="../assets/user-icon.png"
+  emp_name!: string;
+  job!: string;
+  emp_id!: number;
+  json: any;
+  email!: string;
+  gender!: string;
   route: ActivatedRoute = inject(ActivatedRoute);
     employeeid = -1;
     constructor(private router: Router,private employeeService: EmployeeserviceService) {
         this.employeeid = Number(this.route.snapshot.params['emp_id']);
     }
   ngOnInit(): void {
-    this.employeeService.getEmployeeById(this.employeeid).subscribe((response) => {console.log(response.emp_name.emp_name)})
+    this.employeeService.getEmployeeById(this.employeeid).subscribe((response) => {
+      this.emp_name = response.emp_name;
+      this.job = response.job_position;
+      this.gender = response.gender;
+      this.emp_id = response.emp_id;
+      this.email = response.email
+
+    }
+    )
   }
   // ngOnInit(): void {
   //   console.log("emp_id is : ",this.employeeid)

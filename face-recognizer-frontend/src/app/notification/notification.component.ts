@@ -24,9 +24,8 @@ export class NotificationComponent implements OnInit{
   ngOnInit(): void {
       this.markleaveService.getRequest().subscribe((response) => {
         this.leaves = response
-        for (let i = 0; i < response.length; i++){
-          console.log(response[i].emp_name)
-        }
+        console.log(response)
+
       })
 
 
@@ -57,12 +56,13 @@ export class NotificationComponent implements OnInit{
 
     this.router.navigate(['/attendance']);
     }
-    showadmindetails(){
+    showNotification(){
        // Show the notification box
        const admindetails = document.getElementById('admin-details') as HTMLDivElement;
        admindetails.style.display = 'block';
 
     }
+    onsave2(){}
     hideNotification() {
       // Hide the notification box
       const admindetails = document.getElementById('admin-details') as HTMLDivElement;

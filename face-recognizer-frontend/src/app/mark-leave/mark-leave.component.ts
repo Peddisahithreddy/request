@@ -13,7 +13,7 @@ import { EmployeeserviceService } from '../employeeservice.service';
 export class MarkLeaveComponent implements OnInit {
   empId: number = history.state.data[0][1];
   empName: string = history.state.data[0][2];
-  email: string = history.state.data[0][6];
+  email: string = history.state.data[0][4];
   startDate!: string;
   endDate!: string;
   leaveForm: FormGroup;
@@ -34,16 +34,16 @@ export class MarkLeaveComponent implements OnInit {
   }
   ngOnInit(): void {
     console.log("State variable value is : ",history.state.data)
-    this.employeeService.getEmployeeById(this.empId).subscribe((data) =>
+  //   this.employeeService.getEmployeeById(this.empId).subscribe((data) =>
 
-    {this.empId = data.emp_name.emp_id,
-      this.empName = data.emp_name.emp_name,
-      this.email = data.emp_name.email,
-      console.log(this.empId,this.empName),
-    console.log(history.state.data),
-  console.log(data.emp_name.email)});
+  //   {this.empId = data.emp_name.emp_id,
+  //     this.empName = data.emp_name.emp_name,
+  //     this.email = data.emp_name.email,
+  //     console.log(this.empId,this.empName),
+  //   console.log(history.state.data),
+  // console.log(data.emp_name.email)});
+  // }
   }
-
 
   // ngOnInit(): void {
   //   this.getEmployeeInfo();
@@ -62,6 +62,7 @@ export class MarkLeaveComponent implements OnInit {
 
   onsave(): void{
     if (this.empId && this.empName) {
+      
       const formData = this.leaveForm.value;
       const result = this.selectedLevel
       console.log("reason for the leave",result)

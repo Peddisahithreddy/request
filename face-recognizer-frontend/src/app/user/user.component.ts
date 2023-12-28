@@ -1,5 +1,5 @@
-import { Component,OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component,OnInit, inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EmployeeserviceService } from '../employeeservice.service';
 
 @Component({
@@ -13,10 +13,15 @@ export class UserComponent implements OnInit {
   employees: any = [];
   emp_ids: number[] =[];
   details: boolean = false;
-  constructor(private router: Router,private employeeService: EmployeeserviceService) {}
+  route: ActivatedRoute = inject(ActivatedRoute);
+    employeeid = -1;
+    constructor(private router: Router,private employeeService: EmployeeserviceService) {
+        this.employeeid = Number(this.route.snapshot.params['emp_id']);
+    }
   ngOnInit(): void {
     this.employeeService.getAllEmployee().subscribe((response) =>{
       this.employees = response
+      console.log("emp_id is : ",this.employeeid)
 
 
     })

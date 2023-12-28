@@ -22,6 +22,7 @@ export class MarkleaveserviceService {
     return this.http.post<any>(this.apiUrl,requestData);
   }
   getRequest(): Observable<any> {
+    
     return this.http.get<any>(this.apiUrl)
   }
 }

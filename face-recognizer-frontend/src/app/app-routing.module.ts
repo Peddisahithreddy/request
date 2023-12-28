@@ -27,7 +27,7 @@ const routes: Routes = [
   {path: 'face-not-recognised',component:FaceNotRecognisedComponent},
   {path:'popup',component:PopupComponent},
   {path:'login',component:LoginComponent},
-  {path:'user',component:UserComponent},
+  {path:'user/:emp_id',component:UserComponent},
   {path:'details/:emp_id',component:DetailsComponent},
   {path:'add-user',component:AddUserComponent},
   {path:'welcome-admin',component:WelcomeAdminComponent},
