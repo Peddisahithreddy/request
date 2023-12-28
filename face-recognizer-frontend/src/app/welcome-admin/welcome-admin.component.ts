@@ -1,6 +1,7 @@
 import { Component,OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { tr } from 'date-fns/locale';
+import { EmployeeserviceService } from '../employeeservice.service';
 
 @Component({
   selector: 'app-welcome-admin',
@@ -10,11 +11,18 @@ import { tr } from 'date-fns/locale';
 export class WelcomeAdminComponent implements OnInit{
   arr: string = history.state.data;
   bell_icon="&#x1F514"
+  employees!: number;
   bell="../assets/bell_icon1.jpg"
   boy_icon="../assets/user-icon.png"
   details: boolean = false;
-  constructor(private router: Router) {}
+  constructor(private router: Router,private employeeService: EmployeeserviceService) {}
   ngOnInit(): void {
+    this.employeeService.getAllEmployee().subscribe((response) => {
+      this.employees = response.emp_id
+      console.log(response)
+      console.log(this.employees)
+    })
+
     console.log("this is in welcome admin page",this.arr[0][0])
   }
 

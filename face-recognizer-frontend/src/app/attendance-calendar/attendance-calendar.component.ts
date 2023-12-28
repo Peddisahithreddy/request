@@ -11,13 +11,14 @@ import { AttendanceService } from '../attendance.service';
 })
 export class AttendanceCalendarComponent implements OnInit{
   boy_icon="../assets/user-icon.png"
-  emp: number = history.state.data;
+  emp: number = history.state.data[0][2];
   emp_name!: string;
   attendances: any = []
 
 
   constructor(private employeeService: EmployeeserviceService,private attendanceService: AttendanceService){}
   ngOnInit(): void {
+    console.log("state variable value is :",history.state.data)
     this.employeeService.getEmployeeById(this.emp).subscribe((data) => {
       this.emp_name = data.emp_name.emp_name
     },)

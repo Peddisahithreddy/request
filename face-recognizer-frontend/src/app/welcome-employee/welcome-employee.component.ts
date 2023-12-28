@@ -34,7 +34,7 @@ export class WelcomeEmployeeComponent {
 
   onsave2(){
     console.log("this is state data",this.users)
-    this.router.navigate(['/attendance-calendar'],{state:{data:this.emp_id}});
+    this.router.navigate(['/attendance-calendar'],{state:{data:this.result}});
   //this.router.navigate(['/notification']);
   }
   onsave3(){

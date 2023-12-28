@@ -10,8 +10,8 @@
     </div>
     <ul>
       <li><a routerLink="/notification"[innerHTML]="bell_icon"alt="Photo Icon" class="nav-icon"></a></li>
-      <li><a  (click)="showNotification()"><img [src]="boy_icon" alt="Photo Icon" class="nav-icon">
-        </a></li>
+      <li><a [routerLink]="['/notification', employees]">View</a><img [src]="boy_icon" alt="Photo Icon" class="nav-icon">
+        </li>
 
 
 

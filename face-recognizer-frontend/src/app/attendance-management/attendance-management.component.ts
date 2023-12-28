@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { AttendanceService } from '../attendance.service';
+import { DialogService } from '../dialog.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-attendance-management',
@@ -12,8 +14,10 @@ export class AttendanceManagementComponent {
   status: string = '';
   entry_time!: string;
   message: string ='';
+  successMessage$ = this.dialogService.successMessageAction$;
+  errorMessage$ = this.dialogService.errorMessageAction$;
   boy_icon="../assets/user-icon.png"
-  constructor(private attendanceService: AttendanceService){}
+  constructor(private attendanceService: AttendanceService,private dialogService: DialogService){}
 
   onsave(){
     const datajson = {
@@ -22,14 +26,18 @@ export class AttendanceManagementComponent {
       status: this.status,
       entry_time: this.entry_time
     }
-    this.attendanceService.post_attendance(datajson).subscribe(response => {
-      this.message = response.message
+    this.attendanceService.post_attendance(datajson).pipe(
+      tap(response => {
+      this.message = response.message;
+      this.dialogService.setSuccessMessage(this.message);
       const message = document.getElementById('message') as HTMLDivElement | null;
         if (message) {
           message.style.display = 'block';
         }
       console.log("response is :",response.message)
-    console.log(this.status)})
+    console.log(this.status);
+  })
+    ).subscribe();
   }
   showadmindetails(){
     // Show the notification box

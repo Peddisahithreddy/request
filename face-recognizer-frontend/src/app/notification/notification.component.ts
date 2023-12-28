@@ -1,9 +1,10 @@
 import { ActivatedRoute,Router,NavigationEnd } from '@angular/router';
-import { Component,OnInit } from '@angular/core';
+import { Component,OnInit, inject } from '@angular/core';
 import { MyserviceService } from '../myservice.service';
 import { UserserviceService } from '../userservice.service';
 import { Observable,filter } from 'rxjs';
 import { MarkleaveserviceService } from '../markleaveservice.service';
+import { EmployeeserviceService } from '../employeeservice.service';
 
 @Component({
   selector: 'app-notification',
@@ -18,13 +19,23 @@ export class NotificationComponent implements OnInit{
   username!: string;
   result!: string;
   leaves: any = [];
+  emp_id!: number;
   //id: number = history.state.data[0];
   //email: string = history.state.data[2];
-  constructor(private router: Router,private route: ActivatedRoute,private markleaveService: MarkleaveserviceService,private userService: UserserviceService) {}
+  route: ActivatedRoute = inject(ActivatedRoute);
+  employeeid = '';
+  constructor(private router: Router,private employeeService: EmployeeserviceService,
+    private markleaveService: MarkleaveserviceService,
+    private userService: UserserviceService,
+    ) {
+      this.employeeid = String(this.route.snapshot.params['employees']);
+  }
+
   ngOnInit(): void {
-      this.markleaveService.getRequest().subscribe((response) => {
+    console.log(this.employeeid)
+    this.markleaveService.getRequest().subscribe((response) => {
         this.leaves = response
-        console.log(response)
+
 
       })
 
@@ -48,6 +59,11 @@ export class NotificationComponent implements OnInit{
 
 
   onsave(){
+    this.employeeService.getEmployeeById(this.emp_id).subscribe(
+      (response) => console.log("response in notification page is :",response))
+
+
+
 
 
   this.router.navigate(['/user']);

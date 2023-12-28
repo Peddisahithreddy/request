@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { DialogService } from './dialog.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,15 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'facial_recognition';
+  successMessage$ = this.dialogService.successMessageAction$.pipe(
+    tap((message) => {
+      setTimeout(() => {
+    this.dialogService.clearAllMessage();
+  },2000);
+})
+);
+  errorMessage$ = this.dialogService.errorMessageAction$;
+
+  constructor(private dialogService: DialogService) {}
+
 }

@@ -533,8 +533,6 @@ class Attendance(db.Model):
         # Check if there is an existing record for today
         emp_exists = Employee.query.filter_by(emp_id = self.emp_id).first()
         today_record = Attendance.query.filter_by(emp_id=self.emp_id, date=current_time.date()).first()
-        print(f"emp exist data is : ",emp_exists)
-        print(f"Outside the api today_record value is :",today_record)
         if emp_exists:
           if today_record:
               # Update the exit time for the existing record
@@ -574,7 +572,6 @@ def mark_entry_exit():
 
 
     if employee_id is None and employee_name is None:
-        print("inside if block")
         return jsonify({'messsage': 'emp_id and emp_name are required'}), 400
 
     emp_exists = Employee.query.filter_by(emp_id = employee_id).first()
@@ -588,7 +585,7 @@ def mark_entry_exit():
         if  today_record:
             today_record.status = "status"
             db.session.commit()
-            return({'message':'Your attendance has been updated'})
+            return({'message':'Your exit time has been updated'})
 
         else:
             return({'message':'Your attendance has been marked'})
