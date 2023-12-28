@@ -529,10 +529,12 @@ class Attendance(db.Model):
         current_time = datetime.utcnow()
 
 
+
         # Check if there is an existing record for today
         emp_exists = Employee.query.filter_by(emp_id = self.emp_id).first()
         today_record = Attendance.query.filter_by(emp_id=self.emp_id, date=current_time.date()).first()
         print(f"emp exist data is : ",emp_exists)
+        print(f"Outside the api today_record value is :",today_record)
         if emp_exists:
           if today_record:
               # Update the exit time for the existing record
@@ -564,34 +566,52 @@ class Attendance(db.Model):
 
 @app.route('/attendance', methods=['POST'])
 def mark_entry_exit():
+    current_time = datetime.utcnow()
     data = request.json
-    emp_id = data.get('emp_id')
-    emp_name = data.get('emp_name')
+    employee_id = data.get('emp_id')
+    employee_name = data.get('emp_name')
+    status = data.get('status')
 
-    if emp_id is None or emp_name is None:
-        print(f"emp_id is :",emp_id,"emp_name is :",emp_name)
+
+    if employee_id is None and employee_name is None:
+        print("inside if block")
         return jsonify({'messsage': 'emp_id and emp_name are required'}), 400
 
+    emp_exists = Employee.query.filter_by(emp_id = employee_id).first()
+    today_record = Attendance.query.filter_by(emp_id=employee_id,date=current_time.date() ).first()
 
-    attendance_entry_exit = Attendance(emp_id=emp_id, emp_name=emp_name)
+
+
+    attendance_entry_exit = Attendance(emp_id=employee_id, emp_name=employee_name)
     attendance_entry_exit.mark_entry_exit()
+    if emp_exists:
+        if  today_record:
+            today_record.status = "status"
+            db.session.commit()
+            return({'message':'Your attendance has been updated'})
 
-    return jsonify({'message': 'Entry/Exit marked successfully'}), 200
+        else:
+            return({'message':'Your attendance has been marked'})
 
-# @app.route('/attendance',methods=['POST'])
-# @cross_origin()
-# def post_attendance():
-#     data = request.get_json()
-#     new_attendance = Attendance(
-#             emp_id=data['emp_id'],
-#             emp_name=data['emp_name'],
-#             status=data['status']
-#         )
+    else:
+        return({'error':'Employee not found'})
 
-#     db.session.add(new_attendance)
-#     db.session.commit()
+    # return jsonify({'message': 'Entry/Exit marked successfully'}), 200
 
-#     return jsonify({'message': 'Attendance record created successfully'}), 201
+@app.route('/attendance',methods=['POST'])
+@cross_origin()
+def post_attendance():
+    data = request.get_json()
+    new_attendance = Attendance(
+            emp_id=data['emp_id'],
+            emp_name=data['emp_name'],
+            status=data['status']
+        )
+
+    db.session.add(new_attendance)
+    db.session.commit()
+
+    return jsonify({'message': 'Attendance record created successfully'}), 201
 
 
 # @app.route('/attendance', methods=['PUT'])

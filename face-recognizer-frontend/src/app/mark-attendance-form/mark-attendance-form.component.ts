@@ -9,18 +9,39 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./mark-attendance-form.component.css']
 })
 export class MarkAttendanceFormComponent {
+
   username!: string;
   userId!: number;
+  message: string = '';
+  details: boolean = false;
   constructor(private router: Router, private attendanceService: AttendanceService) {}
   onSubmit(){
+    this.details = true;
+
+    // Check if 'details' is true
+
     const jsonData = {
       "emp_id": this.userId,
       "emp_name": this.username
     }
-    this.attendanceService.post_attendance(jsonData).subscribe(response => {console.log("response is :",response)})
+    this.attendanceService.post_attendance(jsonData).subscribe(response => {
+      if (this.details == true) {
+        // Get the admin-details element and set its display style to 'block'
+        const message = document.getElementById('message') as HTMLDivElement | null;
+        if (message) {
+          message.style.display = 'block';
+        }
+      }
+      console.log("response is :",response)
+    this.message = response.message
+  console.log(response.message)
+
+  })
 
 
-    this.router.navigate(['/attendance']);
+
+
+    //this.router.navigate(['/attendance']);
     }
     onsave1(){
 

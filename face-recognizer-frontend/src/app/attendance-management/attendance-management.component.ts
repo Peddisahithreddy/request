@@ -11,6 +11,7 @@ export class AttendanceManagementComponent {
   id!: number;
   status: string = '';
   entry_time!: string;
+  message: string ='';
   boy_icon="../assets/user-icon.png"
   constructor(private attendanceService: AttendanceService){}
 
@@ -21,7 +22,14 @@ export class AttendanceManagementComponent {
       status: this.status,
       entry_time: this.entry_time
     }
-    this.attendanceService.post_attendance(datajson).subscribe(response => {console.log("response is :",response)})
+    this.attendanceService.post_attendance(datajson).subscribe(response => {
+      this.message = response.message
+      const message = document.getElementById('message') as HTMLDivElement | null;
+        if (message) {
+          message.style.display = 'block';
+        }
+      console.log("response is :",response.message)
+    console.log(this.status)})
   }
   showadmindetails(){
     // Show the notification box
