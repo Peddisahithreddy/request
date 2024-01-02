@@ -13,7 +13,7 @@ export class AppComponent {
     tap((message) => {
       setTimeout(() => {
     this.dialogService.clearAllMessage();
-  },2000);
+  },2500);
 })
 );
   errorMessage$ = this.dialogService.errorMessageAction$;

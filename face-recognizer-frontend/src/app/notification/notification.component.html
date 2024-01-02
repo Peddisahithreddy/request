@@ -30,7 +30,7 @@
           <img [src]="girl_icon"alt="User 1">
           <span>{{leave.emp_name}}</span>
 
-          <button class="approve-btn" [routerLink]="['/user', leave.emp_id]">Approve</button>
+          <button class="approve-btn" (click)="handleButtonClick(leave.emp_id, leave.request_id)">Approve</button>
           <button class="reject-btn"(click)="onsave1()">Reject</button>
         </div>
       </div>

@@ -456,7 +456,7 @@ def get_requests():
 
         # Convert the list of requests to a list of dictionaries
         requests_list =[ {
-                # 'request_id': requests.request_id,
+                'request_id': request.request_id,
                 'emp_id': request.emp_id,
                 'emp_name': request.emp_name,
                 'request_status': request.request_status,
@@ -473,8 +473,38 @@ def get_requests():
 
         # Return the list of requests as JSON
         return requests_list
+
+@app.route('/request/<int:requestId>',methods = ['GET'])
+@cross_origin()
+def get_request(requestId):
+    singlerequest = Request.query.filter_by(request_id = requestId).first()
+    requests_list ={
+                'emp_id': singlerequest.emp_id,
+                'emp_name': singlerequest.emp_name,
+                'request_status': singlerequest.request_status,
+                'request_time': singlerequest.request_time.isoformat(),
+                'date_from': singlerequest.date_from.isoformat(),
+                'date_to': singlerequest.date_to.isoformat() ,
+                'approved_by': singlerequest.approved_by,
+                'approved_time': singlerequest.approved_time.isoformat(),
+                'manager': singlerequest.manager,
+                'request_type': singlerequest.request_type,
+                'email': singlerequest.email
+            }
+
+
+        # Return the list of requests as JSON
+    return requests_list
+
+@app.route('/request/<int:requestId>',methods = ['DELETE'])
+@cross_origin()
+def del_request(requestId):
+    delete_req = Request.query.get(requestId)
+    db.session.delete(delete_req)
+    db.session.commit()
+    return jsonify({'message': 'Employee deleted successfully'})
 class Absence(db.Model):
-    leave_id = db.Column(db.Integer,primary_key = True)
+    leave_id = db.Column(db.Integer,primary_key = True,autoincrement = True)
     emp_id = db.Column(db.Integer, unique=False, nullable=False)
     emp_name = db.Column(db.String(100), nullable=False)
     date_from = db.Column(db.DateTime,nullable = False)
@@ -495,16 +525,19 @@ class Absence(db.Model):
             'leave_status':self.leave_status
         }
 
+
+
 @app.route('/absence',methods = ['POST'])
 @cross_origin()
 def post_absence():
   data = request.get_json()
+
   post_leave = Absence(
-      leave_id = data['leave_id'],
+
       emp_id = data['emp_id'],
       emp_name = data['emp_name'],
-      date_from = datetime.utcnow(),
-      date_to = datetime.utcnow(),
+      date_from = data['date_from'],
+      date_to = data['date_to'],
       contact_no = data['contact_no'],
       email = data['email'],
       leave_status = data['leave_status']
@@ -513,6 +546,15 @@ def post_absence():
   db.session.commit()
 
   return jsonify({'message': 'Employee added successfully'})
+
+@app.route('/absence/<int:leave_id>', methods=['GET'])
+def get_absence(leave_id):
+    absence = Absence.query.get(leave_id)
+
+    if absence:
+        return jsonify(absence.serialize())
+    else:
+        return jsonify({'message': 'Absence not found'}), 404
 
 class Attendance(db.Model):
     attendance_id = db.Column(db.Integer, primary_key=True)

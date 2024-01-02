@@ -22,7 +22,13 @@ export class MarkleaveserviceService {
     return this.http.post<any>(this.apiUrl,requestData);
   }
   getRequest(): Observable<any> {
-    
+
     return this.http.get<any>(this.apiUrl)
+  }
+  singleRequest(request_id: number): Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}/${request_id}`)
+  }
+  deleteRequest(request_id: number): Observable<any>{
+    return this.http.delete<any>(`${this.apiUrl}/${request_id}`)
   }
 }
